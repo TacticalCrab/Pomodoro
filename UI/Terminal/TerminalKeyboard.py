@@ -33,9 +33,9 @@ class TerminalKeyboard:
             key = msvcrt.getch()
             if not self._is_running:
                 break
-            
+
             if key == b'\x03':
-                raise KeyboardInterrupt
+                raise KeyboardInterrupt()
 
             key = key.decode()
             if key in self._events:
@@ -43,12 +43,17 @@ class TerminalKeyboard:
                     handler()
     
     def start_thread(self):
-        self._thread = Thread(target=lambda: self.run())
+        self._is_running = True
+        self._thread = Thread(
+            target=lambda: self.run(),
+            daemon=True
+        )
         self._thread.start()
 
     def stop_thread(self):
         if self._thread is not None:
             self._is_running = False
+
 
 if __name__ == "__main__":
     from time import sleep

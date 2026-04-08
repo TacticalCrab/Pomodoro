@@ -67,6 +67,12 @@ class Timer:
         self.start_time = None
         self._count_from_time = None
         self._stop_time = None
+        self._time = self.time
+
+    def __str__(self):
+        total_seconds_left = self.get_time_left().total_seconds()
+        minutes_left, seconds_left = divmod(total_seconds_left, 60)
+        return f"{round(minutes_left):02}:{round(seconds_left):02}"
 
 
 if __name__ == "__main__":
