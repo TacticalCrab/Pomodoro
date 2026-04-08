@@ -1,7 +1,6 @@
 from time import sleep
-from os import system
 
-from UI.Terminal.TerminalInput import TerminalInput
+from UI.Terminal.TerminalUtils import TerminalUtils
 from lib.Timer import Timer
 
 class Option:
@@ -20,13 +19,10 @@ class TerminalUI:
             minutes=25
         )
 
-    def clear_screen(self):
-        system("cls")
-
     def handler_set_time(self):
         print("Setup your timer:")
-        minutes = TerminalInput.get_int("Minutes", 0)
-        seconds = TerminalInput.get_int("Seconds", 0)
+        minutes = TerminalUtils.get_int("Minutes", 0)
+        seconds = TerminalUtils.get_int("Seconds", 0)
         self.timer.set_time(
             minutes=minutes,
             seconds=seconds
@@ -42,7 +38,7 @@ class TerminalUI:
         print(self.timer.get_seconds_left(), self.timer.time)
         try:
             while self.timer.get_seconds_left() > 0:
-                self.clear_screen()
+                TerminalUtils.clear_screen()
                 print(self.get_timer_str())
                 sleep(0.5)
         except KeyboardInterrupt:
@@ -54,7 +50,7 @@ class TerminalUI:
         self.options.append(Option(name, handler))
 
     def handle_pick_option(self):
-        pick = TerminalInput.get_range("Choice", 1, len(self.options), 1) - 1
+        pick = TerminalUtils.get_range("Choice", 1, len(self.options), 1) - 1
         self.options[pick].handler()
 
     def show_options(self):
@@ -68,7 +64,7 @@ class TerminalUI:
 
     def run(self):
         while True:
-            self.clear_screen()
+            TerminalUtils.clear_screen()
             print("Current timer:", self.get_timer_str(), "\n")
             self.show_options()
             print()

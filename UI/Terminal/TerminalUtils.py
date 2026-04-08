@@ -1,12 +1,18 @@
-class TerminalInput:
+from os import system
+
+class TerminalUtils:
     INPUT_CHAR = ">"
+
+    @staticmethod
+    def clear_screen():
+        system("cls")
 
     @staticmethod
     def get_int(text: str, default = None):
         default_text = f" (default: {default})" if default is not None else ""
 
         while True:
-            value = input(f"{text}{default_text}{TerminalInput.INPUT_CHAR} ")
+            value = input(f"{text}{default_text}{TerminalUtils.INPUT_CHAR} ")
             if len(value) == 0:
                 return default
 
@@ -22,7 +28,7 @@ class TerminalInput:
         print(f"{text}{space}{start_end_text}", end="")
 
         while True:
-            value = input(f"{TerminalInput.INPUT_CHAR} ")
+            value = input(f"{TerminalUtils.INPUT_CHAR} ")
             if len(value) == 0:
                 return default
 
