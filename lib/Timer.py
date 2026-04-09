@@ -9,6 +9,9 @@ class Timer:
     start_time: dt.datetime = None
     is_stopped: bool = True
 
+    def __init__(self):
+        ...
+
     def get_end_time(self):
         start_time = dt.datetime.now()
         if self._count_from_time is not None and not self.is_stopped:

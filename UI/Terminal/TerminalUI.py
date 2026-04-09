@@ -1,8 +1,6 @@
 from UI.Terminal.common.TerminalUtils import TerminalUtils
 from UI.Terminal.views import TimeView, SetupTimerView
-
-from UI.Terminal.components.TerminalShortcuts import TerminalShortcuts
-from lib.Timer import Timer
+from UI.Terminal.components import Timer, TerminalShortcuts
 
 class TerminalUI:
     timer: Timer
@@ -35,6 +33,6 @@ class TerminalUI:
     def run(self):
         while True:
             TerminalUtils.clear_screen()
-            print("Current timer:", self.timer, "\n")
+            print(self.timer.render(), "\n")
             print(self.shortcuts.render_list())
             self.shortcuts.listen_once()

@@ -1,7 +1,6 @@
-from lib.Timer import Timer
 from UI.Terminal.common.TerminalUtils import TerminalUtils
 from UI.Terminal.common.TerminalKeyboard import TerminalKeyboard
-from UI.Terminal.components.TerminalShortcuts import TerminalShortcuts
+from UI.Terminal.components import TerminalShortcuts, Timer
 
 from time import sleep
 
@@ -39,7 +38,8 @@ class TimeView:
             TerminalUtils.clear_screen()
             stopped_text = "stopped" if self.timer.is_stopped else ""
 
-            print(f"[{self.timer}] {stopped_text}")
+            print(self.timer.render())
+            print(stopped_text)
             print("")
             print(self.shortcuts.render_inline())
             sleep(0.4)
