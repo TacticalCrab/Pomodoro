@@ -1,6 +1,6 @@
 from lib.Timer import Timer
-from UI.Terminal.TerminalUtils import TerminalUtils
-from UI.Terminal.TerminalKeyboard import TerminalKeyboard
+from UI.Terminal.common.TerminalUtils import TerminalUtils
+from UI.Terminal.common.TerminalKeyboard import TerminalKeyboard
 
 from time import sleep
 
@@ -33,14 +33,17 @@ class TimeView:
 
         while self._view_active:
             TerminalUtils.clear_screen()
-            print(f"[{self.timer}]")
+            stopped_text = "stopped" if self.timer.is_stopped else ""
+
+            print(f"[{self.timer}] {stopped_text}")
             self._print_key_events()
             sleep(0.4)
 
     def _print_key_events(self):
         key_events = [
             ["s", "Stop Timer"],
-            ["r", "Resume Timer"],
+            ["h", "Start / Resume Timer"],
+            ["r", "Reset Timer"],
             ["x", "Exit"]
         ]
 
@@ -53,7 +56,8 @@ class TimeView:
 
     def _setup_keyboard_events(self):
         self.keyboard.register_key_event("s", lambda: self.timer.stop())
-        self.keyboard.register_key_event("r", lambda: self.timer.resume())
+        self.keyboard.register_key_event("h", lambda: self.timer.resume())
+        self.keyboard.register_key_event("r", lambda: self.timer.reset())
         self.keyboard.register_key_event("x", lambda: self._exit())
 
     def display_view(self):

@@ -1,6 +1,4 @@
-from time import sleep
-
-from UI.Terminal.TerminalUtils import TerminalUtils
+from UI.Terminal.common.TerminalUtils import TerminalUtils
 from UI.Terminal.views.TimeView import TimeView
 from lib.Timer import Timer
 
