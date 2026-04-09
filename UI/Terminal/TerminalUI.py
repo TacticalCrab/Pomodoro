@@ -1,5 +1,6 @@
 from UI.Terminal.common.TerminalUtils import TerminalUtils
-from UI.Terminal.views.TimeView import TimeView
+from UI.Terminal.views import TimeView, SetupTimerView
+
 from UI.Terminal.components.TerminalShortcuts import TerminalShortcuts
 from lib.Timer import Timer
 
@@ -18,13 +19,9 @@ class TerminalUI:
         self.timer.set_time(minutes=25)
 
     def handler_set_time(self):
-        print("Setup your timer:")
-        minutes = TerminalUtils.get_int("Minutes", 0)
-        seconds = TerminalUtils.get_int("Seconds", 0)
-        self.timer.set_time(
-            minutes=minutes,
-            seconds=seconds
-        )
+        TerminalUtils.clear_screen()
+        view = SetupTimerView(self.timer)
+        view.display_view()
 
     def handler_start_timer(self):
         TerminalUtils.clear_screen()
