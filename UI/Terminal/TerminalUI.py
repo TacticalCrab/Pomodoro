@@ -1,20 +1,19 @@
 from UI.Terminal.common.TerminalUtils import TerminalUtils
 from UI.Terminal.views.TimeView import TimeView
+from UI.Terminal.components.TerminalShortcuts import TerminalShortcuts
 from lib.Timer import Timer
 
-class Option:
-    def __init__(self, name, handler):
-        self.name = name
-        self.handler = handler
-
 class TerminalUI:
-    timer = Timer()
-    options: list[Option] = []
+    timer: Timer
+    shortcuts: TerminalShortcuts
 
     def __init__(self):
-        self.register_option("Set timer time", self.handler_set_time)
-        self.register_option("Start timer", self.handler_start_timer)
-        self.register_option("Exit", self.handler_exit)
+        self.timer = Timer()
+        self.shortcuts = TerminalShortcuts()
+
+        self.shortcuts.add_terminal_shortcut("1", "Set timer time", self.handler_set_time)
+        self.shortcuts.add_terminal_shortcut("2", "Start timer", self.handler_start_timer)
+        self.shortcuts.add_terminal_shortcut("3", "Exit", self.handler_exit)
 
         self.timer.set_time(minutes=25)
 
@@ -36,21 +35,9 @@ class TerminalUI:
     def handler_exit(self):
         exit(0)
 
-    def register_option(self, name, handler):
-        self.options.append(Option(name, handler))
-
-    def handle_pick_option(self):
-        pick = TerminalUtils.get_range("Choice", 1, len(self.options), 1) - 1
-        self.options[pick].handler()
-
-    def show_options(self):
-        for i, option in enumerate(self.options, start = 1):
-            print(f"{i}. {option.name}")
-
     def run(self):
         while True:
             TerminalUtils.clear_screen()
             print("Current timer:", self.timer, "\n")
-            self.show_options()
-            print()
-            self.handle_pick_option()
+            print(self.shortcuts.render_list())
+            self.shortcuts.listen_once()

@@ -3,12 +3,14 @@ from threading import Thread
 
 
 class TerminalKeyboard:
-    _events: dict[str, set] = {}
-    _is_running = True
-    _thread = None
+    _events: dict[str, set]
+    _is_running: bool
+    _thread: Thread
 
     def __init__(self):
-        ...
+        self._events = {}
+        self._is_running = True
+        self._thread = None
 
     def register_key_event(self, key, handler):
         if key not in self._events:
@@ -28,19 +30,22 @@ class TerminalKeyboard:
     def clear_events(self):
         self._events = {}
     
+    def run_once(self):
+        key = msvcrt.getch()
+        if not self._is_running:
+            return
+
+        if key == b'\x03':
+            raise KeyboardInterrupt()
+
+        key = key.decode()
+        if key in self._events:
+            for handler in self._events[key]:
+                handler()
+
     def run(self):
         while self._is_running:
-            key = msvcrt.getch()
-            if not self._is_running:
-                break
-
-            if key == b'\x03':
-                raise KeyboardInterrupt()
-
-            key = key.decode()
-            if key in self._events:
-                for handler in self._events[key]:
-                    handler()
+            self.run_once()
     
     def start_thread(self):
         self._is_running = True

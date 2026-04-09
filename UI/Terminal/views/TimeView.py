@@ -1,16 +1,21 @@
 from lib.Timer import Timer
 from UI.Terminal.common.TerminalUtils import TerminalUtils
 from UI.Terminal.common.TerminalKeyboard import TerminalKeyboard
+from UI.Terminal.components.TerminalShortcuts import TerminalShortcuts
 
 from time import sleep
 
 class TimeView:
-    keyboard: TerminalKeyboard = TerminalKeyboard()
+    _view_active: bool
+    shortcuts: TerminalShortcuts
+    keyboard: TerminalKeyboard
     timer: Timer
-    _view_active = True
 
     def __init__(self, timer):
+        self.shortcuts = TerminalShortcuts()
+        self.keyboard = TerminalKeyboard()
         self.timer = timer
+        self._view_active = True
 
     def __del__(self):
         self._clean_up()
@@ -20,8 +25,7 @@ class TimeView:
         self._clean_up()
 
     def _clean_up(self):
-        self.keyboard.clear_events()
-        self.keyboard.stop_thread()
+        self.shortcuts.stop_thread()
 
     def _start_timer(self):
         if not self.timer.time:
@@ -36,31 +40,17 @@ class TimeView:
             stopped_text = "stopped" if self.timer.is_stopped else ""
 
             print(f"[{self.timer}] {stopped_text}")
-            self._print_key_events()
+            print("")
+            print(self.shortcuts.render_inline())
             sleep(0.4)
 
-    def _print_key_events(self):
-        key_events = [
-            ["s", "Stop Timer"],
-            ["h", "Start / Resume Timer"],
-            ["r", "Reset Timer"],
-            ["x", "Exit"]
-        ]
-
-        key_events_str = ""
-        for [key, name] in key_events:
-            key_events_str += f"[{key}] {name}  "
-
-        print("")
-        print(key_events_str)
-
     def _setup_keyboard_events(self):
-        self.keyboard.register_key_event("s", lambda: self.timer.stop())
-        self.keyboard.register_key_event("h", lambda: self.timer.resume())
-        self.keyboard.register_key_event("r", lambda: self.timer.reset())
-        self.keyboard.register_key_event("x", lambda: self._exit())
+        self.shortcuts.add_terminal_shortcut("s", "stop timer", lambda: self.timer.stop())
+        self.shortcuts.add_terminal_shortcut("h", "start / resume timer", lambda: self.timer.resume())
+        self.shortcuts.add_terminal_shortcut("r", "reset timer", lambda: self.timer.reset())
+        self.shortcuts.add_terminal_shortcut("x", "exit", lambda: self._exit())
 
     def display_view(self):
         self._setup_keyboard_events()
-        self.keyboard.start_thread()
+        self.shortcuts.listen_thread()
         self._start_timer()
