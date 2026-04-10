@@ -34,7 +34,7 @@ class TerminalShortcuts:
     def remove_terminal_shortcut(self, key, handler):
         for s in self.shortcuts:
             if s.key == key and s.handler == handler:
-                self.keyboard.remove_key_event(key, handler)
+                self.keyboard.remove_event(key, handler)
                 self.shortcuts.remove(s)
                 break
 

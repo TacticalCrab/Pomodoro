@@ -1,6 +1,8 @@
 import msvcrt
 from threading import Thread
 
+class TerminalKeyboardEvents:
+    ON_PRESS = "on_press"
 
 class TerminalKeyboard:
     _events: dict[str, set]
@@ -18,7 +20,13 @@ class TerminalKeyboard:
 
         self._events[key].add(handler)
 
-    def remove_key_event(self, key, handler):
+    def register_on_press_event(self, handler):
+        if TerminalKeyboardEvents.ON_PRESS not in self._events:
+            self._events[TerminalKeyboardEvents.ON_PRESS] = set()
+    
+        self._events[TerminalKeyboardEvents.ON_PRESS].add(handler)
+
+    def remove_event(self, key, handler):
         if key not in self._events:
             return
 
@@ -39,6 +47,10 @@ class TerminalKeyboard:
             raise KeyboardInterrupt()
 
         key = key.decode()
+        if TerminalKeyboardEvents.ON_PRESS in self._events:
+            for handler in self._events[TerminalKeyboardEvents.ON_PRESS]:
+                handler(key)
+
         if key in self._events:
             for handler in self._events[key]:
                 handler()
