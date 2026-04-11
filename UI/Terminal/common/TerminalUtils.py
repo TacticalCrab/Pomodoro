@@ -1,4 +1,5 @@
 from os import system
+from art import text2art
 
 class TerminalUtils:
     INPUT_CHAR = ">"
@@ -6,6 +7,10 @@ class TerminalUtils:
     @staticmethod
     def clear_screen():
         system("cls")
+
+    @staticmethod
+    def ascii_print(text):
+        print(text2art(text))
 
     @staticmethod
     def get_int(text: str, default = None):

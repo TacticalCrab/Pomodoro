@@ -1,18 +1,14 @@
-from UI.Terminal.common.TerminalUtils import TerminalUtils
-from UI.Terminal.common.TerminalKeyboard import TerminalKeyboard
-from UI.Terminal.components import TerminalShortcuts, Timer
+from UI.Terminal.components.Timer import Timer
+from .ViewBase import ViewBase
 
 from time import sleep
 
-class TimeView:
+class TimeView(ViewBase):
     _view_active: bool
-    shortcuts: TerminalShortcuts
-    keyboard: TerminalKeyboard
     timer: Timer
 
     def __init__(self, timer):
-        self.shortcuts = TerminalShortcuts()
-        self.keyboard = TerminalKeyboard()
+        super().__init__()
         self.timer = timer
         self._view_active = True
 
@@ -25,6 +21,7 @@ class TimeView:
 
     def _clean_up(self):
         self.shortcuts.stop_thread()
+        self.shortcuts.clear()
 
     def _start_timer(self):
         if not self.timer.time:
@@ -35,11 +32,13 @@ class TimeView:
         self.timer.start()
 
         while self._view_active:
-            TerminalUtils.clear_screen()
+            self.terminalUtils.clear_screen()
             stopped_text = "stopped" if self.timer.is_stopped else ""
+            finish_text = "finished" if self.timer.get_seconds_left() == 0 else ""
 
             print(self.timer.render())
             print(stopped_text)
+            print(finish_text)
             print("")
             print(self.shortcuts.render_inline())
             sleep(0.4)

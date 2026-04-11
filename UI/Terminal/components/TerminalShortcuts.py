@@ -31,6 +31,11 @@ class TerminalShortcuts:
 
         self.keyboard.register_key_event(shortcut.key, shortcut.handler)
 
+    def remove_all_terminal_shortcuts(self):
+        while len(self.shortcuts) > 0:
+            shortcut = self.shortcuts.pop()
+            self.remove_terminal_shortcut(shortcut.key, shortcut.handler)
+
     def remove_terminal_shortcut(self, key, handler):
         for s in self.shortcuts:
             if s.key == key and s.handler == handler:
@@ -45,7 +50,8 @@ class TerminalShortcuts:
         return "\n".join([f"{s.key}. {s.name}" for s in self.shortcuts])
 
     def clear(self):
-        self.shortcuts = []
+        self.remove_all_terminal_shortcuts()
+        self.keyboard.clear_events()
 
     def listen_thread(self):
         self.keyboard.start_thread()
